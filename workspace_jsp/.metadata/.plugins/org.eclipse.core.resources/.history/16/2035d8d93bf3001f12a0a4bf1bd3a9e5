@@ -1,0 +1,7 @@
+package edu.pnu;
+
+import jakarta.servlet.http.HttpServlet;
+
+public class MyFirstServlet extends HttpServlet {
+
+}

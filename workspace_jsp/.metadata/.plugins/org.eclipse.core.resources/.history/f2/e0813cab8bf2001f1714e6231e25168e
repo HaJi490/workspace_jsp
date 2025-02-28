@@ -1,0 +1,45 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%! //선언부(메서드 선언)
+public int add(int num1, int num2){
+	return num1 + num2;
+}
+
+public int multi(int num1, int num2){
+	return num1 * num2;
+}
+
+public int min(int num1, int num2){
+	return num1 - num2;
+}
+
+public int div(int num1, int num2){
+	return num1 / num2;
+}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>스크립트 요소</title>
+</head>
+<body>
+<%
+int result = add(10,20);
+int num1 = 0;
+int num2 = 0;
+try{
+	num1 = Integer.parseInt(request.getParameter("num1"));
+	num2 = Integer.parseInt(request.getParameter("num2"));
+}catch (Exception e){
+	
+}
+%>
+덧셈 결과1 : <%= result %> <br />
+덧셈 결과2 : <%= add(30, 40) %><br />
+덧셈 결과3 : <%= add(num1, num2) %><br />
+곱셈 결과 : <%= multi(num1, num2) %><br />
+뺄셈 결과 : <%= min(num1, num2) %><br />
+나눗셈 결과 : <%= div(num1, num2) %>
+</body>
+</html>
