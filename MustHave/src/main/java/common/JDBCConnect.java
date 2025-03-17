@@ -59,7 +59,11 @@ public class JDBCConnect {
 	//ServletContext #application의 객체타입
 	public JDBCConnect(ServletContext application) {
 		try {
-			//JDBC 드라이버 로드
+			//JDBC 드라이버 로드(자바에서는 안해도 되지만 jsp에서는 해야함)
+			String driver = application.getInitParameter("MySQLDriver");
+			Class.forName(driver);
+			
+			//DB 연결
 			String url = application.getInitParameter("MySQLURL");
 			String id = application.getInitParameter("MySQLId");
 			String pwd = application.getInitParameter("MySQLPwd");
