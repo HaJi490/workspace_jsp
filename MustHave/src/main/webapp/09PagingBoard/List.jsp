@@ -1,8 +1,10 @@
-<%@page import="model1.BoardDTO"%>
+<%@page import="utils.BoardPage"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
+<%@page import="utils.BoardPage"%>
 
+<%@page import="model1.BoardDTO"%>
 <%@page import="model1.BoardDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -20,7 +22,27 @@ if(searchWord != null){
 }
 
 int totalCount = dao.selectCount(param);//게시물 수 확인
-List<BoardDTO> boardLists = dao.selectList(param);//게시물 목록 받기
+
+/*** 페이지 처리 start ***/
+//전체 페이지 수 계산
+int pageSize = Integer.parseInt(application.getInitParameter("POSTS_PER_PAGE"));
+int blockPage = Integer.parseInt(application.getInitParameter("POSTS_PER_BLOCK"));
+int totalPage = (int)Math.ceil((double)totalCount / pageSize);//전체 페이지 수
+
+//현재 페이지 확인
+int pageNum =1; //기본값
+String pageTemp = request.getParameter("pageNum");
+if(pageTemp != null && !pageTemp.equals(""))
+	pageNum = Integer.parseInt(pageTemp); //요청받은 페이지로 수정
+	
+//목록에 출력할 게시물 범위 계산
+int start = (pageNum - 1) * pageSize;//첫 게시물 번호
+int end = pageNum * pageSize ;//마지막 게시물 번호
+param.put("start", start);
+param.put("pageSize", pageSize);
+/*** 페이지 처리 end ***/
+
+List<BoardDTO> boardLists = dao.selectListPage(param);//게시물 목록 받기
 dao.close();//DB 연결 닫기
 %>
 <!DOCTYPE html>
@@ -28,10 +50,11 @@ dao.close();//DB 연결 닫기
 <head>
 <meta charset="UTF-8">
 <title>목록</title>
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
 </head>
 <body>
 	<jsp:include page="../Common/Link.jsp" /> <!-- 공통링크 -->
-	<h2>목록 보기(List)</h2>
+	<h2>목록 보기(List) - 현재 페이지 : <%= pageNum %> (전체 : <%= totalPage %>)</h2>
 	<!-- 검색폼 -->
 	<form method="get">
 	<table border="1" width="90%">
@@ -71,8 +94,10 @@ if(boardLists.isEmpty()){
 //게시물이 있을 때
 }else{
 	int virtualNum = 0;//화면상에서의 게시물 번호
+	int countNum = 0;
 	for(BoardDTO dto : boardLists){
-		virtualNum = totalCount--;//전체 게시물 수에서 시작해 1씩 감소
+		//virtualNum = totalCount--;//전체 게시물 수에서 시작해 1씩 감소
+		virtualNum = totalCount - (((pageNum -1)+pageSize)+countNum++);
 %>
 		<tr align="center">
 			<td><%= virtualNum %></td><!-- 게시물 번호 -->
@@ -92,7 +117,12 @@ if(boardLists.isEmpty()){
 	</table>
 	<!-- 목록 하단의 [글쓰기] 버튼 -->
 	<table border="1" width="90%">
-		<tr align="right">
+		<tr align="center">
+			<!-- 페이징 처리 -->
+			<td>
+				<%= BoardPage.pagingStr(totalCount, pageSize, blockPage, pageNum, request.getRequestURI()) %>
+			</td>
+			<!-- 글쓰기 버튼 -->
 			<td>
 			<button type="button" onclick="location.href='Write.jsp';"> 글쓰기</button>
 			</td>
