@@ -12,7 +12,7 @@
 <title>JSTL-forEach2</title>
 </head>
 <body>
-	<!-- List 결과 안뜸 >> <c:set value=${lists}>로 해서 안됨 -->
+	<!-- List 결과 안뜸 >> c:set value=${lists}로 해서 안됨 -->
 	<h4>List 컬렉션 사용하기</h4>
 	<%
 	LinkedList<Person> lists = new LinkedList<Person>();

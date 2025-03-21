@@ -31,6 +31,23 @@
   	<param-name>MySQLPwd</param-name>
   	<param-value>tiger</param-value>
   </context-param>
+  <context-param>
+  	<param-name>POSTS_PER_PAGE</param-name>
+  	<param-value>10</param-value>
+  </context-param>
+  <context-param>
+  	<param-name>POSTS_PER_BLOCK</param-name>
+  	<param-value>5</param-value>
+  </context-param>
+  
+  <servlet><!-- 서블릿 등록 -->
+  	<servlet-name>HelloServlet</servlet-name>
+  	<servlet-class>servlet.HelloServlet</servlet-class>
+  </servlet>
+  <servlet-mapping><!-- 서블릿과 요청명 매핑 -->
+  	<servlet-name>HelloServlet</servlet-name>
+  	<url-pattern>/12Servlet/HelloServlet.do</url-pattern><!-- '.do'는 아무거나 붙여도됨. grouping 목적 -->
+  </servlet-mapping>
   
   <error-page>
   	<error-code>404</error-code>

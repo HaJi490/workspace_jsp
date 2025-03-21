@@ -35,25 +35,30 @@ public class BoardDAO extends JDBCConnect{
 		return totalCount;
 	}
 	
-	//검색 조건에 맞는 게시물 목록 반환
-	public List<BoardDTO> selectList(Map<String, Object> map){
+	//검색 조건에 맞는 게시물 목록 반환(페이징 기능 지원)
+	public List<BoardDTO> selectListPage(Map<String, Object> map){
 		List<BoardDTO> bbs = new Vector<BoardDTO>();//결과(게시물 목록)를 담을 변수
 		
+		//쿼리문 템플릿
 		String query = "Select * From board";
+		//검색 조건 추가
 		if(map.get("searchWord") != null) {
-			query += " Where " + map.get("SearchField") + " "
+			query += " Where " + map.get("searchField") + " "	//대소문자 구분
 					+ "Like '%" + map.get("searchWord") + "%'";
 		}
-		query += " Order By num Desc ";
+		query += " Order By num Desc Limit ?, ? ";
 		
+		//쿼리문 완성
 		try {
-			stmt = con.createStatement();//쿼리문 생성
-			rs = stmt.executeQuery(query);//쿼리 실행
+			psmt = con.prepareStatement(query);//쿼리문 생성
+			
+			psmt.setInt(1, (int)map.get("start"));
+			psmt.setInt(2, (int)map.get("pageSize"));
+			rs = psmt.executeQuery();//쿼리 실행
 			
 			while(rs.next()) {//결과를 순회하며
 				//한 행(게시물 하나)의 내용을 DTO에 저장
 				BoardDTO dto = new BoardDTO();
-				
 				dto.setNum(rs.getString("num"));
 				dto.setTitle(rs.getString("title"));
 				dto.setContent(rs.getString("content"));
@@ -61,12 +66,14 @@ public class BoardDAO extends JDBCConnect{
 				dto.setId(rs.getString("id"));
 				dto.setVisitcount(rs.getString("visitcount"));
 				
+				//반환할 결과 목록에 게시물 추가
 				bbs.add(dto);
 			}
 		} catch (Exception e) {
 			System.out.println("게시물 조회 중 예외 발생");
 			e.printStackTrace();
 		}
+		//목록 반환
 		return bbs;
 	}
 	
@@ -114,7 +121,7 @@ public class BoardDAO extends JDBCConnect{
 				dto.setPostdate(rs.getDate("postdate"));
 				dto.setId(rs.getString("id"));
 				dto.setVisitcount(rs.getString(6));
-				dto.setId(rs.getString("name"));
+				dto.setName(rs.getString("name"));
 			}
 		}catch(Exception e) {
 			System.out.println("게시물 상세보기 중 예외 발생");
@@ -137,5 +144,49 @@ public class BoardDAO extends JDBCConnect{
 			System.out.println("게시물 조회수 증가 중 예외 발생");
 			e.printStackTrace();
 		}
+	}
+	
+	//지정한 게시물을 수정
+	public int updateEdit(BoardDTO dto) {
+		int result = 0;
+		
+		try {
+			//쿼리문 템플릿
+			String query = "Update board Set title=?, content=? Where num=?";
+			
+			//쿼리문 완성
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, dto.getTitle());
+			psmt.setString(2, dto.getContent());
+			psmt.setString(3, dto.getNum());
+			
+			//쿼리문 실행
+			result = psmt.executeUpdate();
+		}catch(Exception e) {
+			System.out.println("게시물 수정 중 예외 발생");
+			e.printStackTrace();
+		}
+		return result; //결과 반환
+	}
+	
+	//지정한 게시물을 삭제
+	public int deletePost(BoardDTO dto) {
+		int result = 0;
+		
+		try {
+			//쿼리문 템플릿
+			String query = "Delete From board Where num=?";
+			
+			//쿼리문 완성
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, dto.getNum());
+			
+			//쿼리문 실행
+			result = psmt.executeUpdate();
+		}catch(Exception e) {
+			System.out.println("게시물 삭제 중 예외 발생");
+			e.printStackTrace();
+		}
+		return result;
 	}
 }
