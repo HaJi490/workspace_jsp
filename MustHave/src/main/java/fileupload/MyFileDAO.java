@@ -1,0 +1,73 @@
+package fileupload;
+
+import java.util.List;
+import java.util.Vector;
+
+import common.JDBCConnect;
+
+public class MyFileDAO extends JDBCConnect{//DBConnPool해도됨(근데 안됨)
+	
+	//DAO실행 확인!!!!!!!!(톰캣x java로 실행)
+	public static void main(String[] args) {
+		MyFileDAO dao = new MyFileDAO();
+		
+		MyFileDTO dto = new MyFileDTO();
+		dto.setTitle("title");
+		dto.setCate("cate");
+		dto.setOfile("ofile");
+		dto.setSfile("sfile");
+		
+		int ret = dao.insertFile(dto);
+		System.out.println("insert: " + ret);
+	}
+	
+	//새로운 게시물 입력
+	public int insertFile(MyFileDTO dto) {
+		int applyResult = 0;
+		try {
+			String query = "INSERT INTO myfile ( title, cate, ofile, sfile) "
+						  +"VALUES ( ?, ?, ?, ?)";
+			
+			psmt = con.prepareStatement(query);
+			psmt.setString(1, dto.getTitle());
+			psmt.setString(2, dto.getCate());
+			psmt.setString(3, dto.getOfile());
+			psmt.setString(4, dto.getSfile());
+			
+			applyResult = psmt.executeUpdate();
+		}catch(Exception e) {
+			System.out.println("Insert 중 예외발생");
+			e.printStackTrace();
+		}
+		return applyResult;
+	}
+	
+	//파일 목록을 반환
+	public List<MyFileDTO> myFileList(){
+		List<MyFileDTO> fileList = new Vector<MyFileDTO>();
+		
+		//쿼리문 작성
+		String query = "SELECT * FROM myfile ORDER BY idx DESC";
+		try {
+			stmt = con.createStatement();//statement 객체생성
+			rs = stmt.executeQuery(query);//쿼리 실행
+			
+			while(rs.next()) {//목록 안의 파일 수만큼 반복
+				//DTO에 저장
+				MyFileDTO dto = new MyFileDTO();
+				dto.setIdx(rs.getString(1));
+				dto.setTitle(rs.getString(2));
+				dto.setCate(rs.getString(3));
+				dto.setOfile(rs.getString(4));
+				dto.setSfile(rs.getString(5));
+				dto.setPostdate(rs.getString(6));
+				
+				fileList.add(dto);//목록에 추가
+			}
+		}catch(Exception e) {
+			System.out.println("SELECT 시 예외발생");
+			e.printStackTrace();
+		}
+		return fileList;//목록에 반환
+	}
+}
