@@ -1,5 +1,8 @@
 package utils;
 
+import java.io.PrintWriter;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.jsp.JspWriter;
 
 public class JSFunction {
@@ -30,4 +33,20 @@ public class JSFunction {
 		}
 		catch(Exception e) {}
 	}
+
+	//메세지 알림창을 띄운 후 명시한 URL로 이동합니다.
+	public static void alertLocation(HttpServletResponse resp, String msg, String url) {
+		try {
+			resp.setContentType("text/html;charset=UTF-8");
+			PrintWriter writer = resp.getWriter();
+			String script = "" 
+							+"<script>"
+							+"	alert('" + msg +"');"
+							+"	location.href='" + url+ "';"
+							+"</script>";
+			writer.print(script);
+		}catch(Exception e) {}
+	}
+	
+	
 }
