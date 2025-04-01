@@ -48,7 +48,7 @@
 			<c:forEach items="${ boardLists }" var="row" varStatus="loop">
 				<tr align="center">
 					<td><!-- 번호 -->
-						${ map.totalCount - (((map.pageNum -1) * map.pageSize) + loop.index)}
+						${ map.totalCount - (((map.pageNum -1 ) * map.pageSize) + loop.index)}
 					</td>
 					<td align="left"><!-- 제목(링크) -->
 						<a href="../mvcboard/view.do?idx=${ row.idx }">${ row.title }</a>

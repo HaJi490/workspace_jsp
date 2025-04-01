@@ -27,7 +27,7 @@ public class JSFunction {
 			String script = ""
 						+"<script>"
 						+"	alert('" + msg+ "');"
-						+"	location.back();"
+						+"	history.back();"
 						+"</script>";
 			out.println(script);
 		}
@@ -46,6 +46,23 @@ public class JSFunction {
 							+"</script>";
 			writer.print(script);
 		}catch(Exception e) {}
+	}
+	
+	//(Project2)메세지 알림창을 띄운 후 이전 페이지로 돌아갑니다.
+	public static void alertBack(HttpServletResponse resp, String msg) {
+		try {
+			//req.setCharacterEncoding("UTF-8");
+			resp.setContentType("text/html; chret=UTF-8");
+			
+			PrintWriter out = resp.getWriter();
+			String script = ""
+						+"<script>"
+						+"	alert('" + msg+ "');"
+						+"	history.back();"
+						+"</script>";
+			out.println(script);
+		}
+		catch(Exception e) {}
 	}
 	
 	

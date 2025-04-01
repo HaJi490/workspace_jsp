@@ -48,19 +48,20 @@ public class WriteController extends HttpServlet{
 			
 			dto.setOfile(originalFileName);//원래 파일이름
 			dto.setSfile(savedFileName);//서버에 저장된 파일이름
-			
-			//DAO를 통해 DB에 게시 내용 저장
-			MVCBoardDAO dao = new MVCBoardDAO();
-			int result = dao.insertWrite(dto);
-			dao.close();
-			
-			//성공/실패
-			if(result == 1){//글쓰기 성공
-				resp.sendRedirect("../mvcboard/list.do");
-			}else { //글쓰기 실패
-				JSFunction.alertLocation(resp, "글쓰기에 실패했습니다", "../mvcboard/write.do");
-			}
+		} // if문 잘못묶어서 오류 ------------------------------------------------
+		
+		//DAO를 통해 DB에 게시 내용 저장
+		MVCBoardDAO dao = new MVCBoardDAO();
+		int result = dao.insertWrite(dto);
+		dao.close();
+		
+		//성공/실패
+		if(result == 1){//글쓰기 성공
+			resp.sendRedirect("../mvcboard/list.do");
+		}else { //글쓰기 실패
+			JSFunction.alertLocation(resp, "글쓰기에 실패했습니다", "../mvcboard/write.do");
 		}
+		
 	}
 
 }

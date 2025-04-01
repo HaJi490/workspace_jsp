@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/mbcboard/view.do")
+@WebServlet("/mvcboard/view.do") //localhost:8080/MustHave/mvcboard/view.do 실행시
 public class ViewController extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
@@ -20,18 +20,18 @@ public class ViewController extends HttpServlet{
 		MVCBoardDAO dao = new MVCBoardDAO();
 		String idx = req.getParameter("idx");
 		dao.updateVisitCount(idx);
-		MVCBoardDTO dto = dao.selectView(idx);
+		MVCBoardDTO dto = dao.selectView(idx);//'idx'로 넣어야함
 		dao.close();
 		
 		//줄바꿈 처리
-		dto.setContent(dto.getContent().replaceAll("\r\n", "<br />");
+		dto.setContent(dto.getContent().replaceAll("\r\n", "<br />"));
 		
 		//첨부 파일 확장자 추출 및 이미지 타입 확인
 		String ext = null, fileName = dto.getSfile();
 		if(fileName != null) {
 			ext = fileName.substring(fileName.lastIndexOf(".")+1);
 		}
-		String[] mimStr = {"png", "jpg", "gif"};
+		String[] mimeStr = {"png", "jpg", "gif"};
 		List<String> mimeList = Arrays.asList(mimeStr);
 		boolean isImage = false;
 		if(mimeList.contains(ext)) {
